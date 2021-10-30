@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<title>主页</title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		<div class="icon">
+			<img src="./images/home-0.svg" alt="" />
+		</div>
+		<form class="search" action="https://www.baidu.com/s" method="get">
+			<input ref="searchInput" class="search-input" type="text" name="wd" />
+		</form>
+		<ul class="nav">
+			<li v-for="item in linkList">
+				<a :href="item.href">
+					<img :src="item.icon" alt="" />
+				</a>
+			</li>
+			<!-- <li style="background: none; box-shadow: none;">
+				<img src="./images/add.svg" alt="" />
+			</li> -->
+		</ul>
+	</div>
+	<script>
+		console.log('app')
+		window.vue = new Vue({
+		  el: '#app',
+		  data: {
+			linkList: [
+				{ name: 'bilibili', icon: './images/link-icon/bilibili.svg', href: "https://m.bilibili.com/"             },
+				{ name: 'weibo',    icon: './images/link-icon/weibo.svg',    href: "https://m.weibo.cn/"                 },
+				{ name: 'github',   icon: './images/link-icon/github.svg',   href: "https://github.com/"                 },
+				{ name: 'taobao',   icon: './images/link-icon/taobao.svg',   href: "https://main.m.taobao.com/"          },
+				{ name: 'douban',   icon: './images/link-icon/douban.svg',   href: "https://m.douban.com/home_guide"     },
+				
+			]
+		  },
+		  mounted() {
+			this.$refs.searchInput.focus();
+		  }
+		})
+	</script>
+	<style>
+		* {
+			padding: 0;
+			border: 0;
+			margin: 0;
+			font-family: MiriamLibre,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+		}
+		#app {
+			margin-top: 21vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		.icon {
+			height: 50px;
+		}
+		.icon img {
+			height: 100%;
+		}
+		.search-input {
+			margin-top: 4vh;
+			width: 61vw;
+			height: 40px;
+			border: 1px solid gray;
+			border-radius: 4px;
+			box-shadow: 0px 0px 6px grey;
+			font-size: 20px;
+    		padding: 0 10px;
+    		box-sizing: border-box;
+		}
+		ul {
+			margin-top: 4vh;
+			width: 61vw;
+			display: grid;
+    		grid-template-columns: repeat(5,1fr);
+			grid-column-gap: 16px;
+			grid-row-gap: 10px;
+		}
+		li {
+			display: block;
+			width: 100%;
+			height: 0;
+			padding-bottom: 100%;
+			border-radius: 50%;
+			overflow: hidden;
+			/* background: gray;
+			box-shadow: 1px 1px 5px rgb(128 128 128 / 30%); */
+		}
+		img {
+			width: 100%;
+		}
+	</style>
+</body>
+</html>
