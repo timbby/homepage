@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+<style type="text/css">
+	* {
+		padding: 0;
+		border: 0;
+		margin: 0;
+	}
+	ul {
+		list-style: none;
+	}
+	#app {
+	    margin-top: 100px;
+	    margin-bottom: 200px;
+	    display: flex;
+	    margin-left: 30px;
+	}
+	.question {
+	    font-size: 21px;
+	    margin-top: 18px;
+	}
+	.answer-list {
+	    font-size: 16px;
+	    margin-top: 10px;
+	    display: flex;
+	}
+	.answer {
+		margin-right: 32px;
+    	cursor: pointer;
+	}
+	.answer:hover {
+		transform: scale(1.2);
+	}
+	.answer.select {
+		color: red;
+	}
+	.submit {
+	    margin-top: 100px;
+	    padding: 10px;
+	    background: #80808091;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    width: 100px;
+	    border-radius: 5px;
+	    cursor: pointer;
+	    color: wheat;
+	}
+	.submit:hover {
+	    background: #808080;
+	}
+</style>
+
+<div id="app">
+	<div>
+		<ul>
+			<li v-for="(d, idx) in data">
+				<div class="question">{{idx + 1}}、{{d[1]}}</div>
+				<div class="answer-list">
+					<div
+						v-for="(a, idx_a) in d[2]"
+						@click="click_ans(idx, idx_a)"
+						:class="{select: selected[idx] == idx_a + 1}"
+						class="answer"
+					>
+						{{idx_a + 1}}. {{a}}
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div @click="submit()" class="submit">提交</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+ 	const { createApp, ref } = Vue
+
+	data = [
+		[true, "我觉得比平时容易紧张和着急", ["没有或偶尔", "有时", "经常", "总是如此"]],			// 焦虑
+		[true, "我无缘无故地感到害怕", ["没有或偶尔", "有时", "经常", "总是如此"]],					// 害怕
+		[true, "我容易心里烦乱或觉得惊恐", ["没有或偶尔", "有时", "经常", "总是如此"]],				// 惊恐
+		[true, "我觉得我可能将要发疯", ["没有或偶尔", "有时", "经常", "总是如此"]],					// 发疯感
+		[false, "我觉得一切都很好，也不会发生什么不幸", ["没有或偶尔", "有时", "经常", "总是如此"]],	// 不幸预感
+		[true, "我手脚发抖打颤", ["没有或偶尔", "有时", "经常", "总是如此"]],						// 手足颤抖
+		[true, "我因为头痛、颈痛和背痛而苦恼", ["没有或偶尔", "有时", "经常", "总是如此"]],			// 躯体疼痛
+		[true, "我感觉容易衰弱和疲乏", ["没有或偶尔", "有时", "经常", "总是如此"]],					// 乏力
+		[false, "我觉得心平气和，并且容易安静坐着", ["没有或偶尔", "有时", "经常", "总是如此"]],		// 静坐不能
+		[true, "我觉得心跳得快", ["没有或偶尔", "有时", "经常", "总是如此"]],						// 心悸
+		[true, "我因为一阵阵头晕而苦恼", ["没有或偶尔", "有时", "经常", "总是如此"]],				// 头昏
+		[true, "我有过晕倒发作，或觉得要晕倒似的", ["没有或偶尔", "有时", "经常", "总是如此"]],		// 晕厥感
+		[false, "我呼气吸气都感到很容易", ["没有或偶尔", "有时", "经常", "总是如此"]],				// 呼吸困难
+		[true, "我手脚麻木和刺痛", ["没有或偶尔", "有时", "经常", "总是如此"]],						// 手足刺痛
+		[true, "我因胃痛和消化不良而苦恼", ["没有或偶尔", "有时", "经常", "总是如此"]],				// 胃痛或消化不良
+		[true, "我常常要小便", ["没有或偶尔", "有时", "经常", "总是如此"]],						// 尿意频数
+		[false, "我的手常常是干燥温暖的", ["没有或偶尔", "有时", "经常", "总是如此"]],				// 多汗
+		[true, "我脸红发热", ["没有或偶尔", "有时", "经常", "总是如此"]],							// 面部潮红
+		[false, "我容易入睡并且一夜睡得很好", ["没有或偶尔", "有时", "经常", "总是如此"]],			// 睡眠障碍
+		[true, "我做恶梦", ["没有或偶尔", "有时", "经常", "总是如此"]],							// 恶梦
+	]
+
+	const app = createApp({
+		data() {
+			let selected = []
+			data.forEach(() => selected.push(null))
+			return {
+				data,
+				selected,
+			}
+		},
+		methods: {
+			click_ans(idx, idx_a) {
+				console.log(idx, idx_a, this.selected)
+				this.selected[idx] = idx_a + 1
+				console.log(idx, idx_a, this.selected)
+			},
+			submit_check() {
+				let select_all = true
+				this.selected.forEach(select => {
+					if (select == null) {
+						select_all = false
+					}
+				})
+				if (!select_all) {
+					return false
+				}
+				return true
+			},
+			get_score() {
+				let score = 0
+				for (let i = 0; i < this.selected.length; i++) {
+					if (this.data[i][0]) {
+						score += this.selected[i]
+					} else {
+						// reverse: 5, 9, 13, 17, 19
+						score += (5 - this.selected[i])
+					}
+				}
+				return score
+			},
+			submit() {
+				if (!this.submit_check()) {
+					alert('请完成所有题目！')
+					return
+				}
+				let score = this.get_score()
+				let T = parseInt(score * 1.25)
+				/*
+				SAS标准分的分界值为50分
+					低于50分者为正常
+					50一59分者为轻度焦虑
+					60-69分者是中度焦虑
+					69分以上者是重度焦虑
+				*/
+				console.log(`score: ${score}, T: ${T}`)
+				let result = ''
+				if (T < 50) {
+					result = '正常'
+				} else if (T <= 59) {
+					result = '轻度'
+				} else if (T <= 69) {
+					result = '中度'
+				} else {
+					result = '重度'
+				}
+				console.log(`result: ${result}`)
+				alert(`您的得分为：${T}`)
+			}
+		}
+	}).mount('#app')
+	
+
+</script>
+
+</body>
+</html>
