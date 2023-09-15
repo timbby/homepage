@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+<style type="text/css">
+	* {
+		padding: 0;
+		border: 0;
+		margin: 0;
+	}
+	ul {
+		list-style: none;
+	}
+	#app {
+	    margin-top: 100px;
+	    display: flex;
+	    width: 50%;
+	    margin-left: 25%;
+	}
+	.question {
+	    font-size: 21px;
+	    margin-top: 18px;
+	}
+	.answer-list {
+	    font-size: 16px;
+	    margin-top: 10px;
+	    display: flex;
+	}
+	.answer {
+		margin-right: 32px;
+    	cursor: pointer;
+	}
+	.answer:hover {
+		transform: scale(1.2);
+	}
+	.answer.select {
+		color: red;
+	}
+	.submit {
+	    margin-top: 100px;
+	    padding: 10px;
+	    background: #80808091;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    width: 100px;
+	    border-radius: 5px;
+	    cursor: pointer;
+	    color: wheat;
+	}
+	.submit:hover {
+	    background: #808080;
+	}
+</style>
+
+<div id="app">
+	<div>
+		<ul>
+			<li v-for="(d, idx) in data">
+				<div class="question">{{idx + 1}}、{{d[1]}}</div>
+				<div class="answer-list">
+					<div
+						v-for="(a, idx_a) in d[2]"
+						@click="click_ans(idx, idx_a)"
+						:class="{select: selected[idx] == idx_a + 1}"
+						class="answer"
+					>
+						{{idx_a + 1}}. {{a}}
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div @click="submit()" class="submit">提交</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+ 	const { createApp, ref } = Vue
+
+	data = [
+		[true, "我觉得闷闷不乐，情绪低沉", ["很少", "有时", "经常", "持续"]],
+		[false, "我觉得一天之中早晨最好", ["很少", "有时", "经常", "持续"]],
+		[true, "老是莫名地哭出来或觉得想哭", ["很少", "有时", "经常", "持续"]],
+		[true, "我晚上睡眠不好", ["很少", "有时", "经常", "持续"]],
+		[false, "我吃饭像平时一样多", ["很少", "有时", "经常", "持续"]],
+		[false, "我与异性密切接触时和以往一样感到愉快", ["很少", "有时", "经常", "持续"]],
+		[true, "我感觉自己的体重在下降", ["很少", "有时", "经常", "持续"]],
+		[true, "我有便秘的烦恼", ["很少", "有时", "经常", "持续"]],
+		[true, "我觉得心跳比平时快了", ["很少", "有时", "经常", "持续"]],
+		[true, "我无缘无故感到疲乏", ["很少", "有时", "经常", "持续"]],
+		[false, "我的头脑跟平时一样清楚", ["很少", "有时", "经常", "持续"]],
+		[false, "我做事情像平时一样不感到有什么困难", ["很少", "有时", "经常", "持续"]],
+		[true, "我坐卧不安, 难以保持平静", ["很少", "有时", "经常", "持续"]],
+		[false, "我对未来感到有希望", ["很少", "有时", "经常", "持续"]],
+		[true, "我比平时容易生气激动", ["很少", "有时", "经常", "持续"]],
+		[false, "我觉得做出决定是容易的事", ["很少", "有时", "经常", "持续"]],
+		[false, "我觉得自己是有用的人，别人需要我", ["很少", "有时", "经常", "持续"]],
+		[false, "我的生活过得很有意义", ["很少", "有时", "经常", "持续"]],
+		[true, "我认为如果我死了别人会生活得更好", ["很少", "有时", "经常", "持续"]],
+		[false, "对于平常感兴趣的事我仍旧感兴趣", ["很少", "有时", "经常", "持续"]],
+	]
+
+	const app = createApp({
+		data() {
+			let selected = []
+			data.forEach(() => selected.push(null))
+			return {
+				data,
+				selected,
+			}
+		},
+		methods: {
+			click_ans(idx, idx_a) {
+				console.log(idx, idx_a, this.selected)
+				this.selected[idx] = idx_a + 1
+				console.log(idx, idx_a, this.selected)
+			},
+			submit_check() {
+				let select_all = true
+				this.selected.forEach(select => {
+					if (select == null) {
+						select_all = false
+					}
+				})
+				if (!select_all) {
+					return false
+				}
+				return true
+			},
+			get_score() {
+				let score = 0
+				for (let i = 0; i < this.selected.length; i++) {
+					if (this.data[i][0]) {
+						score += this.selected[i]
+					} else {
+						score += (5 - this.selected[i])
+					}
+				}
+				return score
+			},
+			submit() {
+				if (!this.submit_check()) {
+					alert('请完成所有题目！')
+					return
+				}
+				let score = this.get_score()
+				let T = parseInt(score * 1.25)
+				/*
+				中国常模：
+					分界值为53分，
+					53-62为轻度抑郁，
+					63-72为中度抑郁，
+					72分以上为重度抑郁。
+				*/
+				console.log(`score: ${score}, T: ${T}`)
+				let result = ''
+				if (T < 53) {
+					result = '正常'
+				} else if (T <= 62) {
+					result = '轻度'
+				} else if (T <= 72) {
+					result = '中度'
+				} else {
+					result = '重度'
+				}
+				console.log(`result: ${result}`)
+				alert(`您的得分为：${T}`)
+			}
+		}
+	}).mount('#app')
+	
+
+</script>
+
+</body>
+</html>
